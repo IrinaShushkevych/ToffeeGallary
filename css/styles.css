@@ -1,0 +1,34 @@
+img {
+  display: block;
+  width: 100%;
+  color: #aaa5a5;
+}
+
+.tadsList__control {
+  display: flex;
+}
+
+.tabsList__button {
+  /* display: none; */
+  padding: 10px 20px;
+  background-color: rgb(143, 223, 136);
+  font-size: 18px;
+  border: none;
+  margin-bottom: 30px;
+}
+
+.tabsList__button.is-active {
+  background-color: rgb(218, 107, 171);
+}
+.tabsList__button:not(:last-child) {
+  margin-right: 30px;
+}
+
+.tabsList__item {
+  display: none;
+  margin-bottom: 30px;
+}
+
+.is-active {
+  display: block;
+}

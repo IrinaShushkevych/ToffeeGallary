@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Toffee gallary</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- <script src="js/toffeeGallary.js"></script> -->
+  </head>
+  <body>
+    <div class="tabsList">
+      <div class="tadsList__control">
+        <button class="tabsList__button is-active" data-index="1">
+          Налаштування галереї
+        </button>
+        <button class="tabsList__button" data-index="2">
+          Налаштування пагінації
+        </button>
+        <button class="tabsList__button" data-index="3">
+          Налаштування перегляду
+        </button>
+      </div>
+      <form class="tabsList__item is-active" data-index="1">
+        <label>
+          Кількість видимих елементів
+          <input type="text" name="countItem" value="4" />
+        </label>
+        <label>
+          Активний елемент
+          <input type="text" value="2" name="activeItem" />
+        </label>
+        <label>
+          Відстань між елементами в пікселях
+          <input type="text" value="30" name="spaceBetweenItem" />
+        </label>
+        <label>
+          Показувани кнопки навігації
+          <input type="checkbox" checked name="buttons" />
+        </label>
+      </form>
+      <form class="tabsList__item" data-index="2">
+        <label>
+          Показувани кнопки пагінації
+          <input type="checkbox" name="isPagination" />
+        </label>
+      </form>
+      <form class="tabsList__item" data-index="3">
+        <label>
+          Показувани збільшені елементи галереї
+          <input type="checkbox" checked name="isShowBigest" />
+        </label>
+        <label>
+          Показувани збільшені фото
+          <input type="checkbox" checked name="isShowBigestImg" />
+        </label>
+        <label>
+          Гортати елементи галереї
+          <input type="checkbox" checked name="isShowBigestButton" />
+        </label>
+      </form>
+    </div>
+    <button type="button" class="tabsList__submitButton">
+      Зберегти зміни
+    </button>
+    <!-- В этот список добавляй элементы галереи -->
+
+    <div id="toffee">
+      <ul class="gallery toffee__gallery">
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825_1280.jpg"
+            alt="Hokkaido Flower"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/14/22/05/container-4203677__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/14/22/05/container-4203677_1280.jpg"
+            alt="Container Haulage Freight"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/16/09/47/beach-4206785__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/16/09/47/beach-4206785_1280.jpg"
+            alt="Aerial Beach View"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2016/11/18/16/19/flowers-1835619__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2016/11/18/16/19/flowers-1835619_1280.jpg"
+            alt="Flower Blooms"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2018/09/13/10/36/mountains-3674334__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2018/09/13/10/36/mountains-3674334_1280.jpg"
+            alt="Alpine Mountains"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/16/23/04/landscape-4208571__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/16/23/04/landscape-4208571_1280.jpg"
+            alt="Mountain Lake Sailing"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272_1280.jpg"
+            alt="Alpine Spring Meadows"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255_1280.jpg"
+            alt="Nature Landscape"
+          />
+        </li>
+        <li class="toffee__item">
+          <img
+            class="gallery__image"
+            src="https://cdn.pixabay.com/photo/2019/05/17/04/35/lighthouse-4208843__340.jpg"
+            data-source="https://cdn.pixabay.com/photo/2019/05/17/04/35/lighthouse-4208843_1280.jpg"
+            alt="Lighthouse Coast Sea"
+          />
+        </li>
+      </ul>
+
+      <button
+        type="button"
+        class="toffee__button-left"
+        data-action="change-image"
+        data-type="prev"
+      >
+        <
+      </button>
+      <button
+        type="button"
+        class="toffee__button-right"
+        data-action="change-image"
+        data-type="next"
+      >
+        >
+      </button>
+    </div>
+
+    <script src="js/app.js" type="module"></script>
+  </body>
+</html>
