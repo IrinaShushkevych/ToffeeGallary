@@ -9,6 +9,7 @@ export default class ToffeeGalarry {
     isShowBigest = true,
     isShowBigestImg = true,
     isShowBigestButton = true,
+    isLoop = true,
     ...settings
   }) {
     this._refs = {}
@@ -18,6 +19,7 @@ export default class ToffeeGalarry {
     this._countItem = countItem
     this._activeItem = activeItem - 1
     this._marginItem = spaceBetweenItem
+    this._isLoop = isLoop
     this._isPagination = isPagination
     this._isShowBigest = isShowBigest
     this._isShowBigestImg = isShowBigestImg
@@ -36,7 +38,6 @@ export default class ToffeeGalarry {
     this._stylingContainer()
     this._stylingItem()
     this._stylingButton()
-    this._add_events()
     if (this._isPagination) {
       this._setPagination()
       this._selectActivePagination()
@@ -45,6 +46,7 @@ export default class ToffeeGalarry {
       this._setBackdrop()
       this._stylingBackdrop()
     }
+    this._add_events()
   }
 
   delete() {
@@ -83,6 +85,14 @@ export default class ToffeeGalarry {
       'click',
       this._events.clickButtonRight,
     )
+    if (this._isPagination) {
+      this._events.onClickPaginationButton = this._onClickPagination.bind(this)
+      console.dir(this)
+      this._refs.pagination.addEventListener(
+        'click',
+        this._events.onClickPaginationButton,
+      )
+    }
   }
 
   _stylingContainer() {
@@ -105,10 +115,25 @@ export default class ToffeeGalarry {
         ? this._activeItem + Math.floor(this._countItem / 2)
         : this._activeItem + Math.floor(this._countItem / 2)
 
+    if (cntBegin <= 0 && !this._isLoop)
+      this._refs.buttonLeft.style.visibility = 'hidden'
+    if (cntBegin > 0 && !this._isLoop)
+      this._refs.buttonLeft.style.visibility = 'visible'
+    if (cntEnd >= this._refs.items.length - 1 && !this._isLoop)
+      this._refs.buttonRight.style.visibility = 'hidden'
+    if (cntEnd < this._refs.items.length - 1 && !this._isLoop)
+      this._refs.buttonRight.style.visibility = 'visible'
+
     if (cntBegin < 0) {
       cntEnd += 0 - cntBegin
       cntBegin = 0
     }
+
+    if (cntEnd >= this._refs.items.length && !this._isLoop) {
+      cntBegin -= cntEnd - this._refs.items.length + 1
+      cntEnd = this._refs.items.length - 1
+    }
+
     this._refs.items.forEach((el, idx) => {
       el.style.boxShadow =
         '0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)'
@@ -271,11 +296,14 @@ export default class ToffeeGalarry {
     this._refs.backdropCloseButton.style.backgroundColor = 'transparent'
     this._refs.backdropCloseButton.style.cursor = 'pointer'
     this._refs.backdropCloseButton.style.outline = 'none'
+    this._refs.backdropCloseButton.style.zIndex = 1003
     if (this._isShowBigestButton) {
       this._styleButtonElement(this._refs.backdropNextItemButton)
       this._styleButtonElement(this._refs.backdropPrevItemButton)
       this._refs.backdropPrevItemButton.style.left = '20px'
       this._refs.backdropNextItemButton.style.right = '20px'
+      this._refs.backdropPrevItemButton.style.zIndex = 1003
+      this._refs.backdropNextItemButton.style.zIndex = 1003
     }
   }
 
@@ -415,6 +443,7 @@ export default class ToffeeGalarry {
       paginationItem[i].style.height = '20px'
       paginationItem[i].style.backgroundColor = 'red'
       paginationItem[i].style.borderRadius = '50%'
+      paginationItem[i].classList.add('toffee__paginationItem')
       if (i !== this._refs.items.length - 1) {
         paginationItem[i].style.marginRight = '10px'
       }
@@ -440,5 +469,13 @@ export default class ToffeeGalarry {
         el.style.transform = 'scale(1)'
       }
     })
+  }
+
+  _onClickPagination(e) {
+    if (e.target.classList.contains('toffee__paginationItem')) {
+      this._activeItem = this._refs.paginationItems.indexOf(e.target)
+      this._stylingItem()
+      this._selectActivePagination()
+    }
   }
 }
