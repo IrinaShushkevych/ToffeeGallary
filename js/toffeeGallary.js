@@ -47,7 +47,7 @@ export default class ToffeeGalarry {
       this._setBackdrop()
       this._stylingBackdrop()
     }
-    this._add_events()
+    this._addEvents()
   }
 
   delete() {
@@ -75,7 +75,7 @@ export default class ToffeeGalarry {
     }
   }
 
-  _add_events() {
+  _addEvents() {
     this._events.clickItemEvent = this._onClickItem.bind(this)
     this._events.clickButtonLeft = this._onPrevItem.bind(this)
     this._events.clickButtonRight = this._onNextItem.bind(this)
@@ -193,18 +193,24 @@ export default class ToffeeGalarry {
       }
 
       if (begin === -1) {
-        el.style.order = idx - this._activeItem + 1
+        // el.style.order = idx - this._activeItem + 1
+        el.style.order = this._countItem - 1 - (cntEnd - idx)
       } else if (begin === 0) {
         if (idx >= cntBegin && idx <= cntEnd)
-          el.style.order = idx - this._activeItem + 1
+          el.style.order =
+            this._countItem - end - 1 - (this._refs.items.length - 1 - cntBegin)
+        //   el.style.order = this._refs.items.length - 1 - idx
+        //   el.style.order = idx - this._activeItem + 1
         if (idx >= begin && idx <= end)
-          el.style.order = this._refs.items.length - this._activeItem + idx + 1
+          el.style.order = this._refs.items.length - cntBegin + 1 + idx
+        //   el.style.order = this._refs.items.length - cntBegin + idx
+        //   el.style.order = this._refs.items.length - this._activeItem + idx + 1
       } else if (end === this._refs.items.length - 1) {
-        console.log('qqqqq')
         if (idx >= cntBegin && idx <= cntEnd)
-          el.style.order = idx - this._activeItem + 1
-        if (idx >= begin && idx <= end)
-          el.style.order = this._refs.items.length - this._activeItem - idx - 1
+          el.style.order = end - begin + 1 + idx
+        //   el.style.order = idx - this._activeItem + 1
+        if (idx >= begin && idx <= end) el.style.order = idx - begin
+        //   el.style.order = this._refs.items.length - this._activeItem - idx - 1
       }
     })
   }
