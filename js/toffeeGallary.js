@@ -6,6 +6,7 @@ export default class ToffeeGalarry {
     spaceBetweenItem = 30,
     buttons = true,
     isPagination = true,
+    countPaginationButton = 5,
     isShowBigest = true,
     isShowBigestImg = true,
     isShowBigestButton = true,
@@ -26,6 +27,7 @@ export default class ToffeeGalarry {
     this._isShowBigestImg = isShowBigestImg
     this._isShowBigestButton = isShowBigestButton
     this._isPagination = isPagination
+    this._countPaginationButton = countPaginationButton
     if (buttons) {
       this._refs.buttonLeft = document.querySelector('.toffee__button-left')
       this._refs.buttonRight = document.querySelector('.toffee__button-right')
@@ -113,7 +115,7 @@ export default class ToffeeGalarry {
     }
   }
 
-  _stylingItem() {
+  _rangeVisibleItem() {
     let cntBegin =
       this._countItem % 2 === 0
         ? this._activeItem - (Math.floor(this._countItem / 2) - 1)
@@ -124,19 +126,6 @@ export default class ToffeeGalarry {
         : this._activeItem + Math.floor(this._countItem / 2)
     let begin = -1
     let end = -1
-    console.log('---------------------')
-    console.log('begin', cntBegin)
-    console.log('end', cntEnd)
-    console.log('active ', this._activeItem)
-
-    if (cntBegin <= 0 && !this._isLoop)
-      this._refs.buttonLeft.style.visibility = 'hidden'
-    if (cntBegin > 0 && !this._isLoop)
-      this._refs.buttonLeft.style.visibility = 'visible'
-    if (cntEnd >= this._refs.items.length - 1 && !this._isLoop)
-      this._refs.buttonRight.style.visibility = 'hidden'
-    if (cntEnd < this._refs.items.length - 1 && !this._isLoop)
-      this._refs.buttonRight.style.visibility = 'visible'
 
     if (cntBegin < 0) {
       if (!this._isLoop) {
@@ -158,10 +147,20 @@ export default class ToffeeGalarry {
       }
     }
 
-    console.log('cnt begin', cntBegin)
-    console.log('cnt end', cntEnd)
-    console.log('begin', begin)
-    console.log(' end', end)
+    return { cntBegin, cntEnd, begin, end }
+  }
+
+  _stylingItem() {
+    const { cntBegin, cntEnd, begin, end } = this._rangeVisibleItem()
+
+    if (cntBegin <= 0 && !this._isLoop)
+      this._refs.buttonLeft.style.visibility = 'hidden'
+    if (cntBegin > 0 && !this._isLoop)
+      this._refs.buttonLeft.style.visibility = 'visible'
+    if (cntEnd >= this._refs.items.length - 1 && !this._isLoop)
+      this._refs.buttonRight.style.visibility = 'hidden'
+    if (cntEnd < this._refs.items.length - 1 && !this._isLoop)
+      this._refs.buttonRight.style.visibility = 'visible'
 
     this._refs.items.forEach((el, idx) => {
       el.style.boxShadow =
@@ -191,26 +190,19 @@ export default class ToffeeGalarry {
       } else {
         el.style.transform = 'scale(1)'
       }
-
+      // порядок вывода елементов
       if (begin === -1) {
-        // el.style.order = idx - this._activeItem + 1
         el.style.order = this._countItem - 1 - (cntEnd - idx)
       } else if (begin === 0) {
         if (idx >= cntBegin && idx <= cntEnd)
           el.style.order =
             this._countItem - end - 1 - (this._refs.items.length - 1 - cntBegin)
-        //   el.style.order = this._refs.items.length - 1 - idx
-        //   el.style.order = idx - this._activeItem + 1
         if (idx >= begin && idx <= end)
           el.style.order = this._refs.items.length - cntBegin + 1 + idx
-        //   el.style.order = this._refs.items.length - cntBegin + idx
-        //   el.style.order = this._refs.items.length - this._activeItem + idx + 1
       } else if (end === this._refs.items.length - 1) {
         if (idx >= cntBegin && idx <= cntEnd)
           el.style.order = end - begin + 1 + idx
-        //   el.style.order = idx - this._activeItem + 1
         if (idx >= begin && idx <= end) el.style.order = idx - begin
-        //   el.style.order = this._refs.items.length - this._activeItem - idx - 1
       }
     })
   }
