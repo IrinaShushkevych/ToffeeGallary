@@ -18,6 +18,7 @@ export default class ToffeeGalarry {
     this._typeContainer = typeContainer.toUpperCase()
     this._countItem = countItem
     this._activeItem = activeItem - 1
+    this._orderActiveItem = activeItem - 1
     this._marginItem = spaceBetweenItem
     this._isLoop = isLoop
     this._isPagination = isPagination
@@ -63,7 +64,15 @@ export default class ToffeeGalarry {
       'click',
       this._events.clickButtonRight,
     )
-    if (this._refs.backdrop) this._refs.root.removeChild(this._events.backdrop)
+    if (this._refs.backdrop) this._refs.root.removeChild(this._refs.backdrop)
+    if (this._isPagination) {
+      this._refs.root.removeChild(this._refs.pagination)
+      this._refs.pagination.removeEventListener(
+        'click',
+        this._events.onClickPaginationButton,
+      )
+      delete this._events.onClickPaginationButton
+    }
   }
 
   _add_events() {
@@ -87,7 +96,6 @@ export default class ToffeeGalarry {
     )
     if (this._isPagination) {
       this._events.onClickPaginationButton = this._onClickPagination.bind(this)
-      console.dir(this)
       this._refs.pagination.addEventListener(
         'click',
         this._events.onClickPaginationButton,
@@ -114,6 +122,12 @@ export default class ToffeeGalarry {
       this._countItem % 2 === 0
         ? this._activeItem + Math.floor(this._countItem / 2)
         : this._activeItem + Math.floor(this._countItem / 2)
+    let begin = -1
+    let end = -1
+    console.log('---------------------')
+    console.log('begin', cntBegin)
+    console.log('end', cntEnd)
+    console.log('active ', this._activeItem)
 
     if (cntBegin <= 0 && !this._isLoop)
       this._refs.buttonLeft.style.visibility = 'hidden'
@@ -125,14 +139,29 @@ export default class ToffeeGalarry {
       this._refs.buttonRight.style.visibility = 'visible'
 
     if (cntBegin < 0) {
-      cntEnd += 0 - cntBegin
-      cntBegin = 0
+      if (!this._isLoop) {
+        cntEnd += 0 - cntBegin
+        cntBegin = 0
+      } else {
+        begin = this._refs.items.length + cntBegin
+        end = this._refs.items.length - 1
+      }
     }
 
-    if (cntEnd >= this._refs.items.length && !this._isLoop) {
-      cntBegin -= cntEnd - this._refs.items.length + 1
-      cntEnd = this._refs.items.length - 1
+    if (cntEnd >= this._refs.items.length) {
+      if (!this._isLoop) {
+        cntBegin -= cntEnd - this._refs.items.length + 1
+        cntEnd = this._refs.items.length - 1
+      } else {
+        begin = 0
+        end = cntEnd - this._refs.items.length
+      }
     }
+
+    console.log('cnt begin', cntBegin)
+    console.log('cnt end', cntEnd)
+    console.log('begin', begin)
+    console.log(' end', end)
 
     this._refs.items.forEach((el, idx) => {
       el.style.boxShadow =
@@ -141,13 +170,18 @@ export default class ToffeeGalarry {
         this._marginItem
       }px) / ${this._countItem})`
       el.style.transition = 'transform 250ms linear'
-
-      if (idx >= cntBegin && idx < cntEnd) {
+      if (
+        (idx >= cntBegin && idx < cntEnd) ||
+        (idx >= begin &&
+          ((idx < end && end < this._refs.items.length - 1) ||
+            (idx <= end && end === this._refs.items.length - 1)))
+      ) {
         el.style.marginRight = `${this._marginItem}px`
       } else {
         el.style.marginRight = `0`
       }
-      if (idx >= cntBegin && idx <= cntEnd) {
+
+      if ((idx >= cntBegin && idx <= cntEnd) || (idx >= begin && idx <= end)) {
         el.style.display = 'block'
       } else {
         el.style.display = 'none'
@@ -156,6 +190,21 @@ export default class ToffeeGalarry {
         el.style.transform = 'scale(1.1)'
       } else {
         el.style.transform = 'scale(1)'
+      }
+
+      if (begin === -1) {
+        el.style.order = idx - this._activeItem + 1
+      } else if (begin === 0) {
+        if (idx >= cntBegin && idx <= cntEnd)
+          el.style.order = idx - this._activeItem + 1
+        if (idx >= begin && idx <= end)
+          el.style.order = this._refs.items.length - this._activeItem + idx + 1
+      } else if (end === this._refs.items.length - 1) {
+        console.log('qqqqq')
+        if (idx >= cntBegin && idx <= cntEnd)
+          el.style.order = idx - this._activeItem + 1
+        if (idx >= begin && idx <= end)
+          el.style.order = this._refs.items.length - this._activeItem - idx - 1
       }
     })
   }
@@ -206,7 +255,7 @@ export default class ToffeeGalarry {
       this._activeItem -= 1
     }
     this._stylingItem()
-    this._selectActivePagination()
+    if (this._isPagination) this._selectActivePagination()
   }
 
   _onNextItem(e) {
@@ -216,7 +265,7 @@ export default class ToffeeGalarry {
       this._activeItem += 1
     }
     this._stylingItem()
-    this._selectActivePagination()
+    if (this._isPagination) this._selectActivePagination()
   }
 
   _setBackdrop() {
@@ -367,7 +416,7 @@ export default class ToffeeGalarry {
       this._onClickOverlay.bind(this),
     )
     this._stylingItem()
-    this._selectActivePagination()
+    if (this._isPagination) this._selectActivePagination()
   }
 
   _onClickOverlay(e) {
@@ -402,10 +451,10 @@ export default class ToffeeGalarry {
         this._hideBackdrop()
         break
       case 'ArrowLeft':
-        this._refs.backdropPrevItem()
+        this._backdropPrevItem()
         break
       case 'ArrowRight':
-        this._refs.backdropNextItem()
+        this._backdropNextItem()
         break
     }
   }
@@ -457,8 +506,6 @@ export default class ToffeeGalarry {
     this._refs.root.append(pagination)
     this._refs.pagination = pagination
     this._refs.paginationItems = paginationItem
-    console.log(paginationItem)
-    console.dir(this)
   }
 
   _selectActivePagination() {
